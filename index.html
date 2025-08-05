@@ -4,372 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arch Linux Manual Installation Guide</title>
-    <style>
-        :root {
-            --bg-primary: #0d1117;
-            --bg-secondary: #161b22;
-            --bg-tertiary: #21262d;
-            --text-primary: #c9d1d9;
-            --text-secondary: #8b949e;
-            --accent-blue: #58a6ff;
-            --accent-purple: #bc8cff;
-            --code-bg: #1a1f24;
-            --border-color: #30363d;
-            --warning-bg: #664d03;
-            --warning-border: #d29922;
-            --success-bg: #0f5132;
-            --success-border: #146c43;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            font-size: var(--font-size, 1rem);
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* Left Sidebar - Table of Contents */
-        .toc-sidebar {
-            background-color: var(--bg-secondary);
-            border-right: 1px solid var(--border-color);
-            padding: 20px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            width: 250px;
-            overflow-y: auto;
-            z-index: 100;
-            flex-shrink: 0;
-        }
-
-        .toc-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: var(--accent-blue);
-        }
-
-        .toc-list {
-            list-style: none;
-        }
-
-        .toc-item {
-            margin-bottom: 4px;
-        }
-
-        .toc-link {
-            color: var(--text-secondary);
-            text-decoration: none;
-            padding: 6px 12px;
-            display: block;
-            border-radius: 6px;
-            transition: all 0.2s ease;
-            font-size: 15px;
-        }
-
-        .toc-link:hover,
-        .toc-link.active {
-            background-color: var(--bg-tertiary);
-            color: var(--accent-blue);
-        }
-
-        .toc-sub-item {
-            margin-left: 15px;
-            font-size: 14px;
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            padding: 40px;
-            margin-left: 250px;
-            margin-right: 200px;
-            min-width: 0; /* Allow flex item to shrink */
-        }
-
-        .mobile-menu-btn {
-            display: none;
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
-            background-color: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            padding: 10px;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        .mobile-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            z-index: 200;
-        }
-
-        .mobile-toc {
-            position: fixed;
-            top: 0;
-            left: -300px;
-            width: 280px;
-            height: 100%;
-            background-color: var(--bg-secondary);
-            transition: left 0.3s ease;
-            z-index: 300;
-            overflow-y: auto;
-            padding: 20px;
-        }
-
-        .mobile-toc.open {
-            left: 0;
-        }
-
-        .mobile-close {
-            float: right;
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: 24px;
-            cursor: pointer;
-            margin-bottom: 20px;
-        }
-
-        /* Right Sidebar - Settings */
-        .settings-sidebar {
-            background-color: var(--bg-secondary);
-            border-left: 1px solid var(--border-color);
-            padding: 20px;
-            position: fixed;
-            top: 0;
-            right: 0;
-            height: 100vh;
-            width: 200px;
-            overflow-y: auto;
-            z-index: 100;
-            flex-shrink: 0;
-        }
-
-        .settings-title {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            color: var(--accent-purple);
-        }
-
-        .setting-group {
-            margin-bottom: 20px;
-        }
-
-        .setting-label {
-            display: block;
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-bottom: 5px;
-        }
-
-        .font-size-buttons {
-            display: flex;
-            gap: 5px;
-            margin-bottom: 10px;
-        }
-
-        .font-btn {
-            flex: 1;
-            padding: 8px 4px;
-            background-color: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 11px;
-            transition: all 0.2s ease;
-        }
-
-        .font-btn:hover {
-            background-color: var(--border-color);
-            color: var(--text-primary);
-        }
-
-        .font-btn.active {
-            background-color: var(--accent-blue);
-            color: white;
-            border-color: var(--accent-blue);
-        }
-
-        /* Content Styling */
-        h1, h2, h3, h4, h5, h6 {
-            margin: 30px 0 15px 0;
-            font-weight: 600;
-        }
-
-        h1 {
-            font-size: 3em;
-            color: var(--accent-blue);
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 10px;
-        }
-
-        h2 {
-            font-size: 2.2em;
-            color: var(--accent-purple);
-            margin-top: 40px;
-        }
-
-        h3 {
-            font-size: 1.6em;
-            color: var(--text-primary);
-        }
-
-        p {
-            margin-bottom: 15px;
-        }
-
-        /* Code blocks */
-        code {
-            background-color: var(--code-bg);
-            color: #79c0ff;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-            font-size: 0.9em;
-        }
-
-        pre {
-            background-color: var(--code-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 16px;
-            margin: 20px 0;
-            overflow-x: auto;
-            position: relative;
-        }
-
-        pre code {
-            background: none;
-            padding: 0;
-            border-radius: 0;
-            color: #79c0ff;
-        }
-
-        /* Links */
-        a {
-            color: var(--accent-blue);
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        /* Warning boxes */
-        .warning {
-            background-color: var(--warning-bg);
-            border: 1px solid var(--warning-border);
-            border-radius: 6px;
-            padding: 16px;
-            margin: 20px 0;
-        }
-
-        .warning::before {
-            content: "⚠️ WARNING: ";
-            font-weight: bold;
-            color: var(--warning-border);
-        }
-
-        /* Disclaimer box */
-        .disclaimer {
-            background-color: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 20px;
-            margin: 30px 0;
-            border-left: 4px solid var(--accent-blue);
-        }
-
-        /* Tips box */
-        .tips {
-            background-color: var(--success-bg);
-            border: 1px solid var(--success-border);
-            border-radius: 6px;
-            padding: 16px;
-            margin: 20px 0;
-        }
-
-        .tips::before {
-            content: "💡 TIPS: ";
-            font-weight: bold;
-            color: var(--success-border);
-        }
-
-        /* Lists */
-        ul, ol {
-            margin-left: 20px;
-            margin-bottom: 15px;
-        }
-
-        li {
-            margin-bottom: 5px;
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-            }
-
-            .toc-sidebar,
-            .settings-sidebar {
-                display: none;
-            }
-
-            .main-content {
-                margin: 0;
-                padding: 80px 20px 20px 20px;
-                padding-left: 20px;
-                padding-right: 20px;
-                width: 100%;
-                max-width: 100%;
-            }
-
-            .mobile-menu-btn {
-                display: block;
-            }
-
-            .mobile-overlay.show {
-                display: block;
-            }
-        }
-
-        /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        /* Highlight current section */
-        .section {
-            scroll-margin-top: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="container">
@@ -384,9 +19,9 @@
         <button class="mobile-close" onclick="closeMobileMenu()">&times;</button>
         <div class="toc-title">Table of Contents</div>
         <ul class="toc-list">
-            <li class="toc-item"><a href="#disclaimer" class="toc-link" onclick="closeMobileMenu()">Disclaimer</a></li>
-            <li class="toc-item"><a href="#tips" class="toc-link" onclick="closeMobileMenu()">CLI Tips</a></li>
-            <li class="toc-item"><a href="#pre-installation" class="toc-link" onclick="closeMobileMenu()">1. Pre Installation</a></li>
+            <li class="toc-item"><a href="#disclaimer" class="toc-link-primary" onclick="closeMobileMenu()">Disclaimer</a></li>
+            <li class="toc-item"><a href="#tips" class="toc-link-primary" onclick="closeMobileMenu()">CLI Tips</a></li>
+            <li class="toc-item"><a href="#pre-installation" class="toc-link-primary" onclick="closeMobileMenu()">1 Pre-Installation</a></li>
             <li class="toc-item toc-sub-item"><a href="#acquire-image" class="toc-link" onclick="closeMobileMenu()">1.1 Acquire Installation Image</a></li>
             <li class="toc-item toc-sub-item"><a href="#verify-signature" class="toc-link" onclick="closeMobileMenu()">1.2 Verify Signature</a></li>
             <li class="toc-item toc-sub-item"><a href="#bootable-usb" class="toc-link" onclick="closeMobileMenu()">1.3 Creating Bootable USB</a></li>
@@ -397,10 +32,10 @@
             <li class="toc-item toc-sub-item"><a href="#partitioning" class="toc-link" onclick="closeMobileMenu()">1.8 Partitioning Disks</a></li>
             <li class="toc-item toc-sub-item"><a href="#format-partitions" class="toc-link" onclick="closeMobileMenu()">1.9 Format Partitions</a></li>
             <li class="toc-item toc-sub-item"><a href="#mount-filesystems" class="toc-link" onclick="closeMobileMenu()">1.10 Mount File Systems</a></li>
-            <li class="toc-item"><a href="#installation" class="toc-link" onclick="closeMobileMenu()">2. Installation</a></li>
+            <li class="toc-item"><a href="#installation" class="toc-link-primary" onclick="closeMobileMenu()">2 Installation</a></li>
             <li class="toc-item toc-sub-item"><a href="#select-mirrors" class="toc-link" onclick="closeMobileMenu()">2.1 Select Mirrors</a></li>
             <li class="toc-item toc-sub-item"><a href="#essential-packages" class="toc-link" onclick="closeMobileMenu()">2.2 Install Essential Packages</a></li>
-            <li class="toc-item"><a href="#configure-system" class="toc-link" onclick="closeMobileMenu()">3. Configure System</a></li>
+            <li class="toc-item"><a href="#configure-system" class="toc-link-primary" onclick="closeMobileMenu()">3 Configure System</a></li>
             <li class="toc-item toc-sub-item"><a href="#fstab" class="toc-link" onclick="closeMobileMenu()">3.1 Fstab</a></li>
             <li class="toc-item toc-sub-item"><a href="#chroot" class="toc-link" onclick="closeMobileMenu()">3.2 Chroot</a></li>
             <li class="toc-item toc-sub-item"><a href="#basic-packages" class="toc-link" onclick="closeMobileMenu()">3.3 Basic Packages</a></li>
@@ -411,7 +46,8 @@
             <li class="toc-item toc-sub-item"><a href="#hostname" class="toc-link" onclick="closeMobileMenu()">3.8 Hostname</a></li>
             <li class="toc-item toc-sub-item"><a href="#timezone" class="toc-link" onclick="closeMobileMenu()">3.9 Time Zone</a></li>
             <li class="toc-item toc-sub-item"><a href="#initramfs" class="toc-link" onclick="closeMobileMenu()">3.10 Initramfs</a></li>
-            <li class="toc-item toc-sub-item"><a href="#unmounting" class="toc-link" onclick="closeMobileMenu()">3.11 Un-mounting</a></li>
+            <li class="toc-item"><a href="#reboot" class="toc-link-primary" onclick="closeMobileMenu()">4 Reboot</a></li>
+            <li class="toc-item"><a href="#post-installation" class="toc-link-primary" onclick="closeMobileMenu()">5 Post-installation</a></li>
         </ul>
     </div>
 
@@ -419,9 +55,9 @@
     <div class="toc-sidebar">
         <div class="toc-title">Table of Contents</div>
         <ul class="toc-list">
-            <li class="toc-item"><a href="#disclaimer" class="toc-link">Disclaimer</a></li>
-            <li class="toc-item"><a href="#tips" class="toc-link">CLI Tips</a></li>
-            <li class="toc-item"><a href="#pre-installation" class="toc-link">1. Pre Installation</a></li>
+            <li class="toc-item"><a href="#disclaimer" class="toc-link-primary">Disclaimer</a></li>
+            <li class="toc-item"><a href="#tips" class="toc-link-primary">CLI Tips</a></li>
+            <li class="toc-item"><a href="#pre-installation" class="toc-link-primary">1 Pre-Installation</a></li>
             <li class="toc-item toc-sub-item"><a href="#acquire-image" class="toc-link">1.1 Acquire Installation Image</a></li>
             <li class="toc-item toc-sub-item"><a href="#verify-signature" class="toc-link">1.2 Verify Signature</a></li>
             <li class="toc-item toc-sub-item"><a href="#bootable-usb" class="toc-link">1.3 Creating Bootable USB</a></li>
@@ -432,10 +68,10 @@
             <li class="toc-item toc-sub-item"><a href="#partitioning" class="toc-link">1.8 Partitioning Disks</a></li>
             <li class="toc-item toc-sub-item"><a href="#format-partitions" class="toc-link">1.9 Format Partitions</a></li>
             <li class="toc-item toc-sub-item"><a href="#mount-filesystems" class="toc-link">1.10 Mount File Systems</a></li>
-            <li class="toc-item"><a href="#installation" class="toc-link">2. Installation</a></li>
+            <li class="toc-item"><a href="#installation" class="toc-link-primary">2 Installation</a></li>
             <li class="toc-item toc-sub-item"><a href="#select-mirrors" class="toc-link">2.1 Select Mirrors</a></li>
             <li class="toc-item toc-sub-item"><a href="#essential-packages" class="toc-link">2.2 Install Essential Packages</a></li>
-            <li class="toc-item"><a href="#configure-system" class="toc-link">3. Configure System</a></li>
+            <li class="toc-item"><a href="#configure-system" class="toc-link-primary">3 Configure System</a></li>
             <li class="toc-item toc-sub-item"><a href="#fstab" class="toc-link">3.1 Fstab</a></li>
             <li class="toc-item toc-sub-item"><a href="#chroot" class="toc-link">3.2 Chroot</a></li>
             <li class="toc-item toc-sub-item"><a href="#basic-packages" class="toc-link">3.3 Basic Packages</a></li>
@@ -446,7 +82,8 @@
             <li class="toc-item toc-sub-item"><a href="#hostname" class="toc-link">3.8 Hostname</a></li>
             <li class="toc-item toc-sub-item"><a href="#timezone" class="toc-link">3.9 Time Zone</a></li>
             <li class="toc-item toc-sub-item"><a href="#initramfs" class="toc-link">3.10 Initramfs</a></li>
-            <li class="toc-item toc-sub-item"><a href="#unmounting" class="toc-link">3.11 Un-mounting</a></li>
+            <li class="toc-item"><a href="#reboot" class="toc-link-primary" onclick="closeMobileMenu()">4 Reboot</a></li>
+            <li class="toc-item"><a href="#post-installation" class="toc-link-primary" onclick="closeMobileMenu()">5 Post-installation</a></li>
         </ul>
     </div>
 
@@ -455,18 +92,18 @@
         <h1>Arch Linux Manual Installation Guide</h1>
 
         <div id="disclaimer" class="section disclaimer">
-            <strong>DISCLAIMER:</strong> Don't blindly follow the commands provided in this guide, the reader is strongly encouraged to go learn about all the discussed topics outside of this guide. There will be links provided where they are needed. This guide is useful for learning some things, but it doesn't cover nearly enough knowledge that is expected from an individual in this environment, but it is a calm and pure intro into manually installing arch.
+            <strong>DISCLAIMER:</strong> Don't blindly follow the commands provided in this guide, the reader is strongly encouraged to go learn about all the discussed topics outside of this guide. There will be links provided where they are needed. This guide is useful for learning some things, but it doesn't cover nearly enough knowledge that is expected from an individual in this environment.
         </div>
 
         <div id="tips" class="section tips">
-            <strong>TIPS FOR CLI (Command Line Interface)</strong><br><br>
-            • You can use <code>CTRL + L</code> to clear your terminal screen<br>
-            • You can use the up ↑ and down ↓ arrow to iterate over your previously ran commands<br>
-            • You can use <code>CTRL + C</code> to stop / terminate a command
+            <strong>TIPS FOR CLI (Command Line Interface)</strong><br>
+            • You can use <key>CTRL + L</key> to clear your terminal screen<br>
+            • You can use <key>CTRL + C</key> to stop / terminate a command<br>
+            • You can use the up <key>↑</key> and down <key>↓</key> arrow to iterate over your previously ran commands
         </div>
 
         <section id="pre-installation" class="section">
-            <h2>1. PRE INSTALLATION</h2>
+            <h2>1 PRE-INSTALLATION</h2>
             <p><em>If you have a bootable arch USB with the latest version you can skip this step</em></p>
 
             <div id="acquire-image" class="section">
@@ -496,7 +133,7 @@
 
             <div id="boot-usb" class="section">
                 <h3>1.4 Boot onto the USB</h3>
-                <p>Restart your computer and enter your BIOS which is usually achieved by clicking the F2 or DEL key during the post phase. In your BIOS you will have to turn off secure boot and fast boot. Then you will have to set your USB to the highest priority as the boot device. After that save and exit and you will be logged in on the USB environment as the root user.</p>
+                <p>Restart your computer and enter your BIOS which is usually achieved by clicking the F2 or DEL key during the post phase. In your BIOS you will have to turn off secure boot and fast boot. Then you will have to set your USB to the highest priority as the boot device. After that save and exit, and you will be logged in on the USB environment as the root user.</p>
             </div>
 
             <div id="keyboard-layout" class="section">
@@ -516,7 +153,7 @@
                 <p>It is recommended for you to be using ethernet during your installation, also it is a lot easier that way since ethernet works out of the box. You can check your internet connection by running:</p>
                 <pre><code># ping archlinux.org</code></pre>
 
-                <p>If you are unable to connect through ethernet and need to use wifi then look into the instructions for <a href="https://wiki.archlinux.org/title/Iwd#iwctl">iwctl</a></p>
+                <p>If you are unable to connect through ethernet and need to use Wi-Fi then look into the instructions for <a href="https://wiki.archlinux.org/title/Iwd#iwctl">iwctl</a></p>
             </div>
 
             <div id="system-clock" class="section">
@@ -547,70 +184,70 @@
                 <p>Wipe your current partition tables to start from scratch:</p>
                 <pre><code># g</code></pre>
 
-                <p>If you will be using a EFI partition on a separate drive you can skip this step but make sure that there is enough space for all of the operating systems and that they are compatible and able to exist on the same partition in the first place. If you want your linux installation to have it's own EFI partition (recommended) you can create it now by doing:</p>
+                <p>If you will be using an EFI partition on a separate drive you can skip this step but make sure that there is enough space for all the operating systems and that they are compatible and able to exist on the same partition in the first place. If you want your linux installation to have its own EFI partition (recommended) you can create it now by doing:</p>
 
-                <pre><code># n</code></pre>
-                <p>Press [ENTER] to select the default option</p>
-                <p>Press [ENTER] to select the default option</p>
-                <pre><code># +1G</code></pre>
+                <pre><code># n
+Press [ENTER] to select the default option
+Press [ENTER] to select the default option
+# +1G</code></pre>
                 <p>Type Y if it asks you to remove the signature if something was on that disk beforehand.</p>
 
                 <p>Now we will be creating the boot partition, which will contain everything needed for your operating system to boot. You can create it now by doing:</p>
 
-                <pre><code># n</code></pre>
-                <p>Press [ENTER] to select the default option</p>
-                <p>Press [ENTER] to select the default option</p>
-                <pre><code># +1G</code></pre>
+                <pre><code># n
+Press [ENTER] to select the default option
+Press [ENTER] to select the default option
+# +1G</code></pre>
                 <p>Type Y if it asks you to remove the signature if something was on that disk beforehand</p>
 
                 <p><strong>Optional</strong></p>
                 <p>If you want a swap partition you can create it now. The size of your swap partition depends on your ram size and if you want hibernation or not. For more information look up the topic by yourself, for example if you have 16 GB of ram and want hibernation then you will make your swap size 24 GB like this:</p>
 
-                <pre><code># n</code></pre>
-                <p>Press [ENTER] to select the default option</p>
-                <p>Press [ENTER] to select the default option</p>
-                <pre><code># +24G</code></pre>
+                <pre><code># n
+Press [ENTER] to select the default option
+Press [ENTER] to select the default option
+# +24G</code></pre>
                 <p>Type Y if it asks you to remove the signature if something was on that disk beforehand</p>
 
                 <p>After creating all your other partitions, now we will make the root partition with the rest of the space on your drive like this:</p>
 
-                <pre><code># n</code></pre>
-                <p>Press [ENTER] to select the default option</p>
-                <p>Press [ENTER] to select the default option</p>
-                <p>Press [ENTER] to select the default option</p>
+                <pre><code># n
+Press [ENTER] to select the default option
+Press [ENTER] to select the default option
+Press [ENTER] to select the default option</code></pre>
                 <p>Type Y if it asks you to remove the signature if something was on that disk beforehand</p>
 
                 <p>Now without exiting the fdisk tool we will set the correct types for your partitions.</p>
 
-                <p>If you have a EFI partition, set it's type to 1 (EFI System) like this:</p>
+                <p>If you have an EFI partition, set its type to 1 (EFI System) like this:</p>
                 <pre><code># t
 # &lt;the number of your EFI partition&gt;
 # 1</code></pre>
 
-                <p>For your boot partition, set it's type to 20 (Linux filesystem) like this:</p>
+                <p>For your boot partition, set its type to 20 (Linux filesystem) like this:</p>
                 <pre><code># t
 # &lt;the number of your boot partition&gt;
 # 20</code></pre>
 
-                <p>If you have a swap partition, set it's type to 19 (Linux swap) like this:</p>
+                <p>If you have a swap partition, set its type to 19 (Linux swap) like this:</p>
                 <pre><code># t
 # &lt;the number of your swap partition&gt;
 # 19</code></pre>
 
-                <p>For your root partition, if you will be using LVM then set it's type to 44 (Linux LVM), if you won't then set it's type to 20 (Linux filesystem), for example this would be if you are using LVM:</p>
+                <p>For your root partition, if you will be using LVM then set its type to 44 (Linux LVM), if you won't then set its type to 20 (Linux filesystem), for example this would be if you are using LVM:</p>
                 <pre><code># t
 # &lt;the number of your root partition&gt;
 # 44</code></pre>
 
-                <p>If any of the number provided are not matching the correct type then you can always type L at the third line to list all of the types.</p>
+                <p>If any of the number provided are not matching the correct type then you can always type L at the third line to list all the types.</p>
 
-                <p>When you are done with all of the steps above you can write the changes like this:</p>
+                <p>When you are done with all the steps above you can write the changes like this:</p>
                 <pre><code># w</code></pre>
             </div>
 
             <div id="format-partitions" class="section">
                 <h3>1.9 Format the partitions</h3>
-                <p>If you are using a EFI partition already created by another operating system you will want to skip this step, don't reformat that partition.</p>
+                <p>If you are using an EFI partition already created by another operating system you will want to skip this step, don't reformat that partition.</p>
 
                 <p>If you have created a separate EFI partition with the instructions provided above then format it to FAT32 like this:</p>
                 <pre><code># mkfs.fat -F32 /dev/&lt;your-efi-partition-name&gt;</code></pre>
@@ -625,7 +262,7 @@
                 <p>If you will not be using LVM for your root partition then just format it to ext4 like this:</p>
                 <pre><code># mkfs.ext4 /dev/&lt;your-root-partition-name&gt;</code></pre>
 
-                <p>If you will be using LVM this is how you setup your root/home partition. Firstly we have to create a physical volume (PV):</p>
+                <p>If you will be using LVM this is how you set up your root/home partition. Firstly we have to create a physical volume (PV):</p>
                 <pre><code># pvcreate /dev/&lt;your-root-partition-name&gt;</code></pre>
 
                 <p>Now we are going to create a volume group with the name volgroup0</p>
@@ -635,7 +272,7 @@
                 <pre><code># lvcreate -L 100GB volgroup0 -n lv_root
 # lvcreate -L 600GB volgroup0 -n lv_home</code></pre>
 
-                <p>If when creating the volumes you get a message saying it found some signatures and if you want to override them, then you can override them and check if the volumes and everything was created successfully and if the mount was successful to make sure everything was setup correct.</p>
+                <p>If when creating the volumes you get a message saying it found some signatures and if you want to override them, then you can override them and check if the volumes and everything was created successfully and if the mount was successful to make sure everything was set up correct.</p>
 
                 <p>To check if the volumes are created successfully run:</p>
                 <pre><code># modprobe dm_mod</code></pre>
@@ -658,14 +295,14 @@
                 <p>If you are not using LVM and have a whole partition for your root then mount it like this:</p>
                 <pre><code># mount /dev/&lt;your-root-partition-name&gt; /mnt</code></pre>
 
-                <p>If you are using LVM and followed the instruction above with the exact names i provided then run this:</p>
+                <p>If you are using LVM and followed the instruction above with the exact names I provided then run this:</p>
                 <pre><code># mount /dev/volgroup0/lv_root /mnt</code></pre>
 
                 <p>Now we are going to be mounting boot before our EFI since EFI will be in a subdirectory of boot. To create the subdirectory for boot and mount it run this:</p>
                 <pre><code># mkdir /mnt/boot
 # mount /dev/&lt;your-boot-partition-name&gt; /mnt/boot</code></pre>
 
-                <p>Now it doesn't matter if you have created a separate EFI partition for your arch or if you are using a already created EFI partition of another operating system, in either way you will now have to create the efi subdirectory and mount the partition like this:</p>
+                <p>Now it doesn't matter if you have created a separate EFI partition for your arch or if you are using an already created EFI partition of another operating system, in either way you will now have to create the efi subdirectory and mount the partition like this:</p>
                 <pre><code># mkdir /mnt/boot/efi
 # mount /dev/&lt;your-efi-partition-name&gt; /mnt/boot/efi</code></pre>
 
@@ -678,7 +315,7 @@
         </section>
 
         <section id="installation" class="section">
-            <h2>2. INSTALLATION</h2>
+            <h2>2 INSTALLATION</h2>
 
             <div id="select-mirrors" class="section">
                 <h3>2.1 Select the mirrors</h3>
@@ -703,7 +340,7 @@
         </section>
 
         <section id="configure-system" class="section">
-            <h2>3. CONFIGURE THE SYSTEM</h2>
+            <h2>3 CONFIGURE THE SYSTEM</h2>
 
             <div id="fstab" class="section">
                 <h3>3.1 Fstab</h3>
@@ -741,10 +378,10 @@
 
             <div id="gpu-drivers" class="section">
                 <h3>3.4 GPU drivers and hardware decoding</h3>
-                <p>If you have a NVIDIA GPU, then to get drivers and hardware decoding, run this:</p>
+                <p>If you have an NVIDIA GPU, then to get drivers and hardware decoding, run this:</p>
                 <pre><code># pacman -S nvidia nvidia-utils nvidia-lts</code></pre>
 
-                <p>If you have a Intel or AMD gpu, then to get drivers, run this:</p>
+                <p>If you have an Intel or AMD gpu, then to get drivers, run this:</p>
                 <pre><code># pacman -S mesa</code></pre>
 
                 <p>For hardware encoding it's different for Intel and AMD.</p>
@@ -850,39 +487,43 @@
 
                 <p>Make sure when running both of these that you see lvm2 and resume in the output to make sure it was successful.</p>
             </div>
+        </section>
 
-            <div id="unmounting" class="section">
-                <h3>3.11 Un-mounting</h3>
-                <p>Although this will be done automatically with just rebooting it is recommended to unmount everything manually.</p>
+        <section id="reboot" class="section">
+            <h2>4 REBOOT</h2>
+            <p>First exit out of the chroot environment:</p>
+            <pre><code># exit</code></pre>
 
-                <p>First exit out of the chroot environment:</p>
-                <pre><code># exit</code></pre>
+            <p>lthough unmounting will be done automatically with just rebooting it is recommended to unmount everything manually. Unmount root and boot:</p>
+            <pre><code># umount -a</code></pre>
 
-                <p>Unmount root and boot:</p>
-                <pre><code># umount -a</code></pre>
+            <p>Now you can reboot:</p>
+            <pre><code># reboot</code></pre>
+        </section>
 
-                <p>Now you can reboot:</p>
-                <pre><code># reboot</code></pre>
+        <section id="post-installation" class="section">
+            <h2>5 Post-installtion</h2>
+            <p>Now after rebooting if you are using swap check if it's active like this:</p>
+            <pre><code># swapon --show</code></pre>
 
-                <p>Now after rebooting if you are using swap check if it's active like this:</p>
-                <pre><code># swapon --show</code></pre>
+            <p>If you want hibernation, now it's time to check if it has been set up properly by running this:</p>
+            <pre><code># cat /proc/cmdline</code></pre>
 
-                <p>If you want hibernation, now it's time to check if it has been setup properly by running this:</p>
-                <pre><code># cat /proc/cmdline</code></pre>
+            <p>In the output you should see resume=UUID=&lt;your-swap-uuid&gt;, if you don't see it then you will need to edit /etc/default/grub again and make sure it's added correctly under GRUB_CMDLINE_LINUX.</p>
 
-                <p>In the output you should see resume=UUID=&lt;your-swap-uuid&gt;, if you don't see it then you will need to edit /etc/default/grub again and make sure it's added correctly under GRUB_CMDLINE_LINUX.</p>
+            <p>If that is all good finally to test hibernation try running this:</p>
+            <pre><code># sudo systemctl hibernate</code></pre>
 
-                <p>If that is all good finally to test hibernation try running this:</p>
-                <pre><code># sudo systemctl hibernate</code></pre>
+            <p>Your system should shut down, turn it back on and check if hibernation is working and if it put you back where you left. If it's not active then probably The /etc/fstab entry is incorrect (e.g., wrong device or UUID)</p>
 
-                <p>Your system should shut down, turn it back on and check if hibernation is working and if it put you back where you left. If it's not active then probably The /etc/fstab entry is incorrect (e.g., wrong device or UUID)</p>
-
-                <p>If everything is working now you can do:</p>
-                <pre><code># pacman -S fastfetch
+            <p>If everything is working now you can do:</p>
+            <pre><code># pacman -S fastfetch
 # fastfetch</code></pre>
 
-                <p><strong>Congratulations, you are using arch btw.</strong> Now you can install your desktop environments of choice and configure your arch-box exactly how you want it, good luck :)</p>
-            </div>
+            <p>Check out <a href="https://wiki.archlinux.org/title/General_recommendations">General recommendations</a> for system management directions and post-installation tutorials (like creating unprivileged user accounts, setting up a graphical user interface, sound or a touchpad).</p>
+
+            <p>For a list of applications that may be of interest, see <a href="https://wiki.archlinux.org/title/List_of_applications">List of applications</a>.</p>
+            <p><strong>Congratulations, you are using arch btw.</strong> Now you can install your desktop environments of choice and configure your arch-box exactly how you want it, good luck.</p>
         </section>
     </main>
 
@@ -901,87 +542,6 @@
     </div>
 </div>
 
-<script>
-  // Mobile menu functionality
-  function toggleMobileMenu() {
-    const overlay = document.querySelector('.mobile-overlay');
-    const toc = document.querySelector('.mobile-toc');
-    overlay.classList.add('show');
-    toc.classList.add('open');
-  }
-
-  function closeMobileMenu() {
-    const overlay = document.querySelector('.mobile-overlay');
-    const toc = document.querySelector('.mobile-toc');
-    overlay.classList.remove('show');
-    toc.classList.remove('open');
-  }
-
-  // Settings functionality
-  function setFontSize(size, element) {
-    document.documentElement.style.setProperty('--font-size', size);
-
-    // Update active button
-    document.querySelectorAll('.font-btn').forEach(btn => btn.classList.remove('active'));
-    if (element) {
-      element.classList.add('active');
-    }
-  }
-
-  // Initialize settings
-  document.addEventListener('DOMContentLoaded', function() {
-    // Set initial font size and mark medium as active
-    setFontSize('1rem');
-    document.querySelector('.font-btn[data-size="medium"]').classList.add('active');
-  });
-
-  function updateContentWidth(value) {
-    const mainContent = document.querySelector('.main-content');
-    mainContent.style.maxWidth = value + 'px';
-    document.getElementById('content-width-value').textContent = value + 'px';
-  }
-
-  // Active TOC link highlighting
-  function updateActiveTocLink() {
-    const sections = document.querySelectorAll('.section[id]');
-    const tocLinks = document.querySelectorAll('.toc-link');
-
-    let currentSection = '';
-
-    sections.forEach(section => {
-      const rect = section.getBoundingClientRect();
-      if (rect.top <= 100 && rect.bottom > 100) {
-        currentSection = section.id;
-      }
-    });
-
-    tocLinks.forEach(link => {
-      link.classList.remove('active');
-      if (link.getAttribute('href') === '#' + currentSection) {
-        link.classList.add('active');
-      }
-    });
-  }
-
-  // Scroll event listener for active TOC highlighting
-  window.addEventListener('scroll', updateActiveTocLink);
-
-  // Initial call to set active link
-  updateActiveTocLink();
-
-  // Smooth scroll for anchor links
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-      e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
-      if (target) {
-        target.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }
-    });
-  });
-</script>
+<script src="script.js"></script>
 </body>
 </html>
