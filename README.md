@@ -12,10 +12,8 @@ This guide was created after a real manual Arch installation experience. It's de
 
 **What makes this guide different?**
 
-- ✅ Every command is included
+- ✅ Every command I personally used is included
 - ✅ Clear explanations and reasoning
-- ✅ Alternative methods (e.g., different bootloaders or partition schemes)
-- ✅ No assumptions — just straight guidance
 - ✅ Focus on understanding, not just copying
 
 > ⚠️ This guide is not the *ultimate* or *only* way to install Arch, but it's a solid, beginner-oriented walkthrough based on a real install.
@@ -24,13 +22,15 @@ This guide was created after a real manual Arch installation experience. It's de
 
 ## 📂 Features
 
-- UEFI & BIOS installation instructions
-- Manual partitioning with `fdisk` and `parted`
-- Filesystem options (`ext4`, `btrfs`, etc.)
-- Bootloader options (`GRUB`, `systemd-boot`)
-- Networking setup
-- User creation and system configuration
-- Helpful tips and gotchas
+This guide covers a **UEFI-only** installation of Arch Linux using the following setup:
+
+- 🧭 **Manual disk partitioning** with `fdisk`
+- 💾 **LVM setup** to allow flexible and dynamic resizing of `/` (root) and `/home`
+- ⚙️ **GRUB bootloader** installation and configuration for UEFI
+- 💤 **Swap partition setup** with optional **hibernation** support
+- 🛠️ Focus on **clarity**, with **every command explained**
+- ❓ Addresses common beginner questions often left out of the official Arch guide
+
 
 ---
 
@@ -39,10 +39,3 @@ This guide was created after a real manual Arch installation experience. It's de
 Just open the website in your browser:
 
 👉 [**neo-brakus.github.io/ArchGuide**](https://neo-brakus.github.io/ArchGuide/)
-
-Or clone the repo and open the HTML file locally:
-
-```bash
-git clone https://github.com/neo-brakus/ArchGuide.git
-cd ArchGuide
-open index.html  # or use your browser
