@@ -193,7 +193,7 @@ Press [ENTER] to select the default option
 # +1G</code></pre>
                 <p>Type Y if it asks you to remove the signature if something was on that disk beforehand.</p>
 
-                <p>Now we will be creating the boot partition, which will contain everything needed for your operating system to boot. You can create it now by doing:</p>
+                <p>For your boot setup you could use your EFI partition and if you want to do that you can look into it, but I will be showing you how to do it with creating a seperate boot partition (recommended). Now to create the boot partition, which will contain everything needed for your operating system to boot run this:</p>
 
                 <pre><code># n
 Press [ENTER] to select the default option
@@ -253,7 +253,7 @@ Press [ENTER] to select the default option</code></pre>
                 <p>If you have created a separate EFI partition with the instructions provided above then format it to FAT32 like this:</p>
                 <pre><code># mkfs.fat -F32 /dev/&lt;your-efi-partition-name&gt;</code></pre>
 
-                <p>For your boot partition to format it to ext4 run this:</p>
+                <p>For your boot partition, the filesystem used will have to be supported by your <a href="https://wiki.archlinux.org/title/Arch_boot_process#Boot_loader">boot loader</a>. For example if you want to format it to ext4 run this:</p>
                 <pre><code># mkfs.ext4 /dev/&lt;your-boot-partition-name&gt;</code></pre>
 
                 <p>If you have made a swap partition run this:</p>
@@ -324,10 +324,10 @@ Press [ENTER] to select the default option</code></pre>
                 <pre><code># pacman -Sy reflector</code></pre>
 
                 <p>And make the mirrors use servers in or near your country, for Germany for example run this:</p>
-                <pre><code># sudo reflector --protocol https,http --country 'Germany' --latest 10 --sort rate --download-timeout 20 --save /etc/pacman.d/mirrorlist</code></pre>
+                <pre><code># reflector --protocol https,http --country 'Germany' --latest 10 --sort rate --download-timeout 20 --save /etc/pacman.d/mirrorlist</code></pre>
 
                 <p>If that also doesn't work then you can edit your mirror list and manually type in a known fast server near you like this:</p>
-                <pre><code># sudo nano /etc/pacman.d/mirrorlist</code></pre>
+                <pre><code># nano /etc/pacman.d/mirrorlist</code></pre>
 
                 <p>Then at the top of the list of servers paste in a line like this for example:</p>
                 <pre><code>Server = https://mirror.chaoticum.net/arch/$repo/os/$arch</code></pre>
@@ -358,8 +358,8 @@ Press [ENTER] to select the default option</code></pre>
                 <pre><code>UUID=&lt;your-uuid&gt; none swap defaults 0 0</code></pre>
 
                 <p>Test if your swap partition is working if there are no errors after running this:</p>
-                <pre><code># sudo swapoff -a
-# sudo swapon -a</code></pre>
+                <pre><code># swapoff -a
+# swapon -a</code></pre>
             </div>
 
             <div id="chroot" class="section">
@@ -385,18 +385,15 @@ Press [ENTER] to select the default option</code></pre>
                 <p>If you have an Intel or AMD gpu, then to get drivers, run this:</p>
                 <pre><code># pacman -S mesa</code></pre>
 
-                <p>For hardware encoding it's different for Intel and AMD.</p>
+                <p>For hardware encoding on AMD the package(libva-mesa-driver) is already installed with the mesa package. But if you are using Inter you will need to install it separately.</p>
 
                 <p>For Intel broadwell chipset and newer, run this:</p>
                 <pre><code># pacman -S intel-media-driver</code></pre>
-
-                <p>For AMD, run this:</p>
-                <pre><code># pacman -S libva-mesa-driver</code></pre>
             </div>
 
             <div id="grub" class="section">
                 <h3>3.5 GRUB</h3>
-                <p>There are many <a href="https://wiki.archlinux.org/title/Arch_boot_process#Boot_loader">Boot loader's</a>, but here I will show you how to use GRUB for your Boot loader.</p>
+                <p>There are many <a href="https://wiki.archlinux.org/title/Arch_boot_process#Boot_loader">boot loader's</a>, but here I will show you how to use GRUB for your Boot loader.</p>
 
                 <p>If you already didn't in the step's provided above, install grub using pacman like this:</p>
                 <pre><code># pacman -S grub</code></pre>
@@ -408,7 +405,7 @@ Press [ENTER] to select the default option</code></pre>
                 <pre><code># blkid /dev/&lt;your-swap-partition-name&gt;</code></pre>
 
                 <p>Now open the file located at /etc/default/grub, with nano for example run this:</p>
-                <pre><code># sudo nano /etc/default/grub</code></pre>
+                <pre><code># nano /etc/default/grub</code></pre>
 
                 <p>And you have to find the line that contains GRUB_CMDLINE_LINUX and make it look like this:</p>
                 <pre><code>GRUB_CMDLINE_LINUX="resume=UUID=&lt;your-uuid&gt;"</code></pre>
@@ -498,22 +495,23 @@ Press [ENTER] to select the default option</code></pre>
             <p>lthough unmounting will be done automatically with just rebooting it is recommended to unmount everything manually. Unmount root and boot:</p>
             <pre><code># umount -a</code></pre>
 
-            <p>Now you can reboot:</p>
-            <pre><code># reboot</code></pre>
+            <p>Now you can shut down your system:</p>
+            <pre><code># shutdown</code></pre>
+            <p>After shutting it down, it is recommended to remove the USB flash drive used for installing arch. Then, turn your computer back on and boot into the drive where arch is installed.</p>
         </section>
 
         <section id="post-installation" class="section">
             <h2>5 Post-installtion</h2>
-            <p>Now after rebooting if you are using swap check if it's active like this:</p>
-            <pre><code># swapon --show</code></pre>
+            <p>Now after booting, firsly log into your root user, then if you are using swap check if it's active like this:</p>
+            <pre><code>$ swapon --show</code></pre>
 
             <p>If you want hibernation, now it's time to check if it has been set up properly by running this:</p>
-            <pre><code># cat /proc/cmdline</code></pre>
+            <pre><code>$ cat /proc/cmdline</code></pre>
 
             <p>In the output you should see resume=UUID=&lt;your-swap-uuid&gt;, if you don't see it then you will need to edit /etc/default/grub again and make sure it's added correctly under GRUB_CMDLINE_LINUX.</p>
 
             <p>If that is all good finally to test hibernation try running this:</p>
-            <pre><code># sudo systemctl hibernate</code></pre>
+            <pre><code>$ sudo systemctl hibernate</code></pre>
 
             <p>Your system should shut down, turn it back on and check if hibernation is working and if it put you back where you left. If it's not active then probably The /etc/fstab entry is incorrect (e.g., wrong device or UUID)</p>
 
@@ -522,8 +520,8 @@ Press [ENTER] to select the default option</code></pre>
             <p>For a list of applications that may be of interest, see <a href="https://wiki.archlinux.org/title/List_of_applications">List of applications</a>.</p>
 
             <p>If everything is working now you can do:</p>
-            <pre><code># pacman -S fastfetch
-# fastfetch</code></pre>
+            <pre><code>$ sudo pacman -S fastfetch
+$ fastfetch</code></pre>
 
             <p><strong>Congratulations, you are using arch btw.</strong> Now you can install your desktop environments of choice and configure your arch-box exactly how you want it, good luck.</p>
         </section>
